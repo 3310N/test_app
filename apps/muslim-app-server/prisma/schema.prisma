@@ -1,0 +1,72 @@
+datasource db {
+  provider = "mongodb"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model AdhanSchedule {
+  createdAt DateTime                    @default(now())
+  id        String                      @id @default(auto()) @map("_id") @db.ObjectId
+  location  Json?
+  time      DateTime?
+  typeField EnumAdhanScheduleTypeField?
+  updatedAt DateTime                    @updatedAt
+}
+
+model Adkar {
+  createdAt   DateTime @default(now())
+  description String?
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  name        String?
+  updatedAt   DateTime @updatedAt
+}
+
+model Mosque {
+  address       String?
+  contactNumber String?
+  createdAt     DateTime @default(now())
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  imamName      String?
+  location      Json?
+  name          String?
+  updatedAt     DateTime @updatedAt
+}
+
+model Prayer {
+  createdAt  DateTime              @default(now())
+  id         String                @id @default(auto()) @map("_id") @db.ObjectId
+  prayerName EnumPrayerPrayerName?
+  prayerTime DateTime?
+  status     EnumPrayerStatus?
+  updatedAt  DateTime              @updatedAt
+  user       User?                 @relation(fields: [userId], references: [id])
+  userId     String?               @db.ObjectId
+}
+
+model User {
+  createdAt DateTime @default(now())
+  email     String?  @unique
+  firstName String?
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  lastName  String?
+  password  String
+  prayers   Prayer[]
+  roles     Json
+  updatedAt DateTime @updatedAt
+  username  String   @unique
+}
+
+enum EnumAdhanScheduleTypeField {
+  Option1
+}
+
+enum EnumPrayerPrayerName {
+  Option1
+}
+
+enum EnumPrayerStatus {
+  Option1
+}
